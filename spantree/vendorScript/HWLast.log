@@ -1,0 +1,53 @@
+INFO:root:IMPORTING....
+INFO:root:IMP:Json
+INFO:root:IMP:Socket
+INFO:root:IMP:Telnet
+INFO:root:IMP:Time
+INFO:root:IMP:Regex
+INFO:root:IMP:System
+INFO:root:Module Done!
+INFO:root:INITIALIZING
+INFO:root:10.238.151.44
+INFO:root:Telnet to 10.238.151.44
+INFO:root:Telnet connection established
+INFO:root:(0, <re.Match object; span=(4, 14), match=b'User name:'>, b'\r\n>>User name:')
+INFO:root:SAM-BB: Accessing OLT: 10.238.151.44
+INFO:root:OLT: Access Granted
+DEBUG:root:OLT ID IS :AYT06019GO0
+INFO:root:Reading General ont infos with F/S/P:0 0 0
+DEBUG:root:OLT Tx power: 3.96
+DEBUG:root:Getting olt optical status of: 1
+WARNING:root:OLT:Ont 1 is not online
+DEBUG:root:Getting olt optical status of: 2
+DEBUG:root:Getting olt optical status of: 3
+WARNING:root:OLT:Ont 3 is not online
+DEBUG:root:Getting olt optical status of: 4
+DEBUG:root:Getting olt optical status of: 5
+DEBUG:root:Getting olt optical status of: 6
+DEBUG:root:Getting olt optical status of: 7
+DEBUG:root:Getting olt optical status of: 8
+DEBUG:root:Getting olt optical status of: 9
+DEBUG:root:Getting olt optical status of: 10
+DEBUG:root:Getting olt optical status of: 11
+DEBUG:root:Getting olt optical status of: 12
+DEBUG:root:Getting olt optical status of: 13
+DEBUG:root:Getting olt optical status of: 14
+WARNING:root:OLT:Ont 14 is not online
+DEBUG:root:Getting olt optical status of: 15
+WARNING:root:OLT:Ont 15 is not online
+DEBUG:root:Getting olt optical status of: 17
+DEBUG:root:Getting olt optical status of: 18
+DEBUG:root:Getting olt optical status of: 19
+DEBUG:root:Getting olt optical status of: 20
+DEBUG:root:Getting olt optical status of: 21
+DEBUG:root:Getting olt optical status of: 22
+DEBUG:root:Getting olt optical status of: 23
+DEBUG:root:Getting olt optical status of: 24
+DEBUG:root:Getting olt optical status of: 25
+DEBUG:root:Getting olt optical status of: 26
+WARNING:root:OLT:Ont 26 is not online
+DEBUG:root:Getting olt optical status of: 27
+WARNING:root:OLT:Ont 27 is not online
+DEBUG:root:Getting olt optical status of: 28
+DEBUG:root:Getting olt optical status of: 30
+DEBUG:root:Getting olt optical status of: 31

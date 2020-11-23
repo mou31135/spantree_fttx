@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.1.2/vuex.min.js"></script>
+  <script src="https://unpkg.com/@chenfengyuan/vue-qrcode@1.0.1/dist/vue-qrcode.min.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+
+  <title>frontend</title>
+  <style>
+    g.node {
+      cursor: pointer;
+      font-family: Verdana, Helvetica;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    g.text {
+      fill: black;
+      padding: 10px;
+    }
+
+    circle.node-dot-active {
+      fill: #f8f9fa;
+      stroke: #96d130;
+      stroke-width: 3px;
+      r: 10;
+      transition-duration: 0.3s;
+    }
+
+
+    circle.node-dot-inactive {
+      fill: #000000;
+      stroke: #96d130;
+      stroke-width: 3px;
+      r: 10;
+      transition-duration: 0.3s;
+    }
+
+    circle.node-dot-offline {
+      fill: #f8f9fa;
+      stroke: #c92232;
+      stroke-width: 3px;
+      r: 10;
+      transition-duration: 0.3s;
+    }
+
+    path.link {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #96d130;
+    }
+
+    path.link-offline {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #c92232;
+    }
+
+    path.link-online {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #96d130;
+    }
+
+    path.link-notline {
+      fill: none;
+      stroke-width: 2px;
+      stroke: ##a7a7a7;
+    }
+
+
+    /** SPINNER CREATION **/
+
+    /* Absolute Center Spinner */
+    .loading {
+      position: fixed;
+      z-index: 999;
+      height: 2em;
+      width: 2em;
+      overflow: show;
+      margin: auto;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    /* Transparent Overlay */
+    .loading:before {
+      content: '';
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+
+      background: -webkit-radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+    }
+
+    /* :not(:required) hides these rules from IE9 and below */
+    .loading:not(:required) {
+      /* hide "loading..." text */
+      font: 0/0 a;
+      color: transparent;
+      text-shadow: none;
+      background-color: transparent;
+      border: 0;
+    }
+
+    .loading:not(:required):after {
+      content: '';
+      display: block;
+      font-size: 10px;
+      width: 1em;
+      height: 1em;
+      margin-top: -0.5em;
+      -webkit-animation: spinner 150ms infinite linear;
+      -moz-animation: spinner 150ms infinite linear;
+      -ms-animation: spinner 150ms infinite linear;
+      -o-animation: spinner 150ms infinite linear;
+      animation: spinner 150ms infinite linear;
+      border-radius: 0.5em;
+      -webkit-box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+      box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+    }
+
+    /* Animation */
+
+    @-webkit-keyframes spinner {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @-moz-keyframes spinner {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @-o-keyframes spinner {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spinner {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    .bg-dark {
+      background-color: #94c51c !important;
+    }
+  </style>
+</head>
+<style lang="sass" scoped>
+  .node cursor: pointer circle stroke: steelblue stroke-width: 3px r: 10 transition-duration: 0.3s text fill: black &:hover circle fill: #d8d8d8 transition-duration: 0.3s &-active circle fill: white &-inactive circle fill: black &-online circle stroke: #96d130 &-offline circle stroke: #c92232 &-unreachable circle stroke: #a0a0a0 &-text &-before text text-anchor: end &-after text text-anchor: start .link fill: none stroke-width: 2px &-online stroke: #96d130 &-offline stroke: #c92232 &-unreachable stroke: #a0a0a0
+</style>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="navbar navbar-dark bg-dark shadow-lg">
+        <div class="container d-flex justify-content-between">
+          <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">Search OLT/LAN1</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+              <ul class="navbar-nav mr-auto" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="pills-home-tab" data-toggle="tab" onclick="tab_active(this.id)" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="pills-contact-tab" data-toggle="tab" onclick="tab_active(this.id);list_l2()" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">
+                    Report
+                  </a>
+                </li>
+              </ul>
+              <ul class="navbar-nav px-3">
+                <li class="nav-item text-nowrap">
+                  <a class="nav-link" target="_self" href="index.html">
+                    <span class="fa fa-sign-out" style="font-size:18px;color:white"></span> &nbsp;<b>Change OLT/LAN1</b>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <div class="row py-5 text-center">
+      <noscript>
+        <strong>We're sorry but frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      </noscript>
+
+      <div class="tab-content col-lg 12" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+          <div class="loading" id="Loading">Loading&#8230;</div>
+          <div class="col-lg-12">
+            <div class="row justify-content-center">
+              <div class="col-lg-12">
+                <h1>Tree</h1>
+              </div>
+              <div id="" class="col-sm-12 col-lg-10">
+                <div id="line-chart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+          <div class="col-lg-12">
+            <h1>Offine Cause</h1>
+          </div>
+          <div id=off_cause>
+            <div class="spinner-border text-primary" role="status" id="loading_report">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div v-if="data_cir">
+
+              <table class="table is-striped is-hoverable is-fullwidth">
+                <thead class="thead-dark">
+                  <tr>
+                    <th class='text-center'>NO.</th>
+                    <th class='text-center'>Lan 1</th>
+                    <th class='text-center'>ONU_ID</th>
+                    <th class='text-center'>Splitter L1</th>
+                    <th class='text-center'>Splitter L2</th>
+                    <th class='text-center'>Port</th>
+                    <th class='text-center'>Status</th>
+                    <th class='text-center'>1490rx</th>
+                    <th class='text-center'>1310tx</th>
+                    <th class='text-center'>1550rx</th>
+                  </tr>
+                </thead>
+                <template v-for="(value, index) in sortOnu(data_cir)">
+                  <tr v-if="value.STATUS != 'online'" style=" background: #ff2525; ">
+                    <td><b>{{index+1}}<b></td>
+                    <td>{{ value.CIRCUIT}}</td>
+                    <td>{{ value.ONU_ID}}</td>
+                    <td>{{ value.L1_SPLITTER}}</td>
+                    <td>{{ value.L2_SPLITTER}}</td>
+                    <td>{{ value.GRON_PORT}}</td>
+                    <td>{{ value.STATUS}}</td>
+                    <td>{{ value.S1490rx}}</td>
+                    <td>{{ value.S1310tx}}</td>
+                    <td>{{ value.S1550rx}}</td>
+                  </tr>
+                  <tr v-else>
+                    <td><b>{{index+1}}<b></td>
+                    <td>{{ value.CIRCUIT}}</td>
+                    <td>{{ value.ONU_ID}}</td>
+                    <td>{{ value.L1_SPLITTER}}</td>
+                    <td>{{ value.L2_SPLITTER}}</td>
+                    <td>{{ value.GRON_PORT}}</td>
+                    <td>{{ value.STATUS}}</td>
+                    <td>{{ value.S1490rx}}</td>
+                    <td>{{ value.S1310tx}}</td>
+                    <td>{{ value.S1550rx}}</td>
+                  </tr>
+                </template>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- built files will be auto injected -->
+
+      <!-- Modal -->
+      <div class="modal" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" id="detail-det">
+          <div class="modal-content">
+            <div class="modal-header">
+              <b>
+                <h5 class="modal-title" id="detail-haed">Modal title</h5>
+              </b>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style=" text-align: initial; ">
+              <div>
+                <div v-if="datialData">
+                  <table class="table is-striped is-hoverable is-fullwidth">
+                    <tr v-for="(value, name, index) in datialData" :key="">
+                      <td><b>{{ name }}<b></td>
+                      <td v-if="name == 'L2_SPLITTER' && datialType =='l1'">
+                        <span v-for="(item, index) in sortL2(value)" :key="item.SPLITTER_OUT">{{item.SPLITTER_OUT}}: {{item.L2_SPLITTER_NAME}}</br> </span>
+                      </td>
+                      <td v-else-if="name == 'ONUs' && datialType =='l2'">
+                        <span v-for="(onu, index) in value"> - {{onu.LAN1}}</br> </span>
+                      </td>
+                      <td v-else>{{ value }}</td>
+                    </tr>
+                    <tr v-if="datialType =='olt'">
+                      <td><b>openMap<b></td>
+                      <td><a v-bind:href="opem_map(datialData.OLT_LATITUDE,datialData.OLT_LONGITUDE)" target="_blank"><b><i class="fas fa-map"></i><b></a></td>
+                    </tr>
+                    <tr v-if="datialType =='l1'">
+                      <td><b>openMap<b></td>
+                      <td><a v-bind:href="opem_map(datialData.L1_LATITUDE,datialData.L1_LONGITUDE)" target="_blank"><b><i class="fas fa-map"></i><b></a></td>
+                    </tr>
+                    <tr v-if="datialType =='l2'">
+                      <td><b>openMap<b></td>
+                      <td><a v-bind:href="opem_map(datialData.L2_LATITUDE,datialData.L2_LONGITUDE)" target="_blank"><b><i class="fas fa-map"></i><b></a></td>
+                    </tr>
+                    <tr v-if="datialType =='port'">
+                      <table v-if="datialTx" class="table is-striped is-hoverable is-fullwidth">
+                        <tr v-for="(value, name, index) in datialTx" :key="">
+                          <td v-if="name != 'id'"><b>{{ name }}<b></td>
+                          <td v-if="name != 'id' && value != '' ">{{ value}}</td>
+                        </tr>
+                      </table>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+</body>
+
+<!-------------------------------bootstrap------------------------------ -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://blog.pixelingene.com/demos/d3_tree/lib/min/d3.min.js"></script>
+<script src="./js_vue/d3.layout.min.js"></script>
+<!------------------------------------------------------------- -->
+
+<script lang="ts">
+  let arr_data_tx = [];
+  let arr_data_l2 = [];
+  let arr_loop_l2 = [];
+  let cir_offline = [];
+
+  var tab_active = (id) => {
+
+    if (id == 'pills-home-tab') {
+      $('#pills-contact-tab').removeClass("active")
+    } else {
+      $('#pills-home-tab').removeClass("active")
+    }
+  }
+
+  const reportLink = new Vue({
+    el: '#off_cause',
+    data: {
+      data_cir: null,
+      data_reort: null,
+
+    },
+    methods: {
+      set_data: async function(data) {
+        this.data_cir = await data.sort((a, b) => {
+          return a.L2_SPLITTER - b.L2_SPLITTER;
+        });
+        let arr_circuir = await this.set_new_data(this.data_cir);
+        this.data_cir = await arr_circuir.sort((a, b) => {
+          return a.STATUS - b.STATUS || a.L1_SPLITTER - b.L1_SPLITTER || a.L2_SPLITTER - b.L2_SPLITTER;
+        });
+        $("#loading_report").hide();
+      },
+      set_new_data: async function(arr_data) {
+
+        let arr_circuir = [];
+
+        if (arr_data.length > 0) {
+
+          for (const det_cir of arr_data) {
+            let arr_data_onu = {};
+
+            arr_data_onu['CIRCUIT'] = det_cir['CIRCUIT'];
+            arr_data_onu['DISTANCE'] = det_cir['DISTANCE'];
+            arr_data_onu['GRON_PORT'] = det_cir['GRON_PORT'];
+            arr_data_onu['L1_SPLITTER'] = det_cir['L1_SPLITTER'];
+            arr_data_onu['L2_SPLITTER'] = det_cir['L2_SPLITTER'];
+            arr_data_onu['OLT_IP'] = det_cir['OLT_IP'];
+            arr_data_onu['OLT_NAME'] = det_cir['OLT_NAME'];
+            arr_data_onu['OLT_VENDOR'] = det_cir['OLT_VENDOR'];
+            arr_data_onu['ONU_ID'] = det_cir['ONU_ID'];
+            arr_data_onu['STATUS'] = det_cir['STATUS'];
+            arr_data_onu['S1490rx'] = det_cir['1490RX'];
+            arr_data_onu['S1310tx'] = det_cir['1310TX'];
+            arr_data_onu['S1550rx'] = det_cir['1550RX'];
+            arr_circuir.push(arr_data_onu);
+          }
+
+          return arr_circuir;
+        } else {
+          return false;
+
+        }
+
+      },
+      sortOnu(arrays) {
+        return _.orderBy(arrays, ['STATUS', 'L1_SPLITTER', 'L2_SPLITTER', 'ONU_ID'], ['asc', 'asc', 'asc', 'asc']);
+      },
+      doMath: function() {
+        return index + 1
+      }
+
+    }
+  })
+
+  async function list_l2() {
+    console.info('sss');
+    let arr_data = cir_offline.data;
+
+    if (arr_data.length > 0) {
+      reportLink.set_data(arr_data);
+    } else {
+      alert("ไม่พบข้อมูล Offine Cause");
+      $("#loading_report").hide();
+      close();
+      return false;
+    }
+
+  }
+
+
+  async function get_off_cir() {
+    $("#div_defct").hide();
+    let arr_circuir = []
+    let arr_data_onu = {};
+    if (cir_offline.length > 0) {
+      for (const det_cir of cir_offline) {
+        console.info(det_cir);
+        let circuit = await det_cir['ONU_ID']
+        let status_onu = await det_cir['STATUS']
+        if (circuit.length > 7 && status_onu == 'ONLINE') {
+          let found = await arr_loop_l2.find(element => element.LAN1 == circuit);
+
+          let singnal = await arr_data_tx.filter((tx) => {
+            return tx.CIRCUIT == circuit;
+          });
+
+          let json_signal = JSON.parse(JSON.stringify(singnal[0]));
+          arr_data_onu = await found;
+          arr_data_onu['CIRCUIT'] = circuit;
+          arr_data_onu['STATUS'] = status_onu;
+          arr_data_onu['S1490rx'] = json_signal.DATA_TX[0]['1490rx'];
+          arr_data_onu['S1310tx'] = json_signal.DATA_TX[0]['1310tx'];
+          arr_data_onu['S1310rx'] = json_signal.DATA_TX[0]['1310rx'];
+          arr_data_onu['S1550rx'] = json_signal.DATA_TX[0]['1550rx'];
+
+          arr_circuir.push(arr_data_onu);
+        } else if (status_onu == 'OFFLINE') {
+          const arr_detail = await arr_loop_l2.find(element => element.LAN1 == circuit);
+          console.info(arr_detail);
+
+          arr_data_onu = await arr_detail;
+          arr_data_onu['CIRCUIT'] = circuit;
+          arr_data_onu['STATUS'] = status_onu;
+          arr_data_onu['S1490rx'] = '-';
+          arr_data_onu['S1310tx'] = '-';
+          arr_data_onu['S1310rx'] = '-';
+          arr_data_onu['S1550rx'] = '-';
+          arr_circuir.push(arr_data_onu);
+        } else {
+          const arr_detail = await arr_loop_l2.find(element => element.LAN1 == circuit);
+          console.info(arr_detail);
+
+          arr_data_onu = await arr_detail;
+          arr_data_onu['CIRCUIT'] = circuit;
+          arr_data_onu['STATUS'] = 'NOT SIGNAL';
+          arr_data_onu['S1490rx'] = '-';
+          arr_data_onu['S1310tx'] = '-';
+          arr_data_onu['S1310rx'] = '-';
+          arr_data_onu['S1550rx'] = '-';
+          arr_circuir.push(arr_data_onu);
+        }
+
+      }
+
+      /* reportLink.set_data(arr_circuir); */
+
+    } else {
+      alert("ไม่พบข้อมูล Offine Cause");
+      $("#loading_report").hide();
+      close();
+      return false;
+    }
+  }
+
+
+  const testingLink = new Vue({
+    el: '#detail-det',
+    data: {
+      datialData: null,
+      datialType: null,
+      datialTx: null
+    },
+    methods: {
+      showDialog: function(data, type, tx) {
+        this.datialData = data
+        this.datialType = type
+        this.datialTx = tx
+
+        $("#myModal").modal();
+      },
+      sortL2(arrays) {
+        return _.orderBy(arrays, 'SPLITTER_OUT', 'asc');
+      },
+      opem_map: function(lat, long) {
+        let url = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + long;
+        return url
+      }
+    },
+  })
+
+  async function modal_detail(type, id) {
+    document.body.style.cursor = 'wait';
+    $("#detail-haed").html(id);
+    let tx_list = '';
+    let arr_tx_list = '';
+    if (type != '' && id != '') {
+      let arr_detail = '';
+      if (type == 'olt') {
+        arr_detail = await axios.get('../../vipmonitor/devTrack/api/oltDetail.php?oltName=' + id);
+      } else if (type == 'l1') {
+        let arr_key = id.split(" : ");
+        arr_detail = await axios.get('../spantree/api/l1Detail.php?l1Name=' + arr_key[0] + '&port=' + arr_key[1]);
+      } else if (type == 'l2') {
+        arr_detail = await axios.get('../spantree/api/l2Detail.php?l2Name=' + id);
+      } else if (type == 'port') {
+        if (cir_offline.data.length > 0) {
+          arr_detail = await axios.get('../../vipmonitor/devTrack/api/onuDetail.php?lan1=' + id);
+
+          tx_list = await cir_offline.data.filter((tx) => {
+            return tx.CIRCUIT == id;
+          });
+
+        }
+
+        arr_tx_list = tx_list[0];
+      } else {
+        return false;
+      }
+
+      testingLink.showDialog(arr_detail.data, type, arr_tx_list);
+    }
+    document.body.style.cursor = 'default';
+
+  }
+
+  //-------------------request get---------------------------------//
+  const url_get = window.location.href;
+  const arr_url = url_get.split("?");
+  const arr_get = arr_url[1].split("&");
+  const arr_val = arr_get[0].split("=");
+  const arr_type = arr_get[1].split("=");
+  let olt_ip = ''
+  //------------------------------------------------------------//
+
+
+
+  //-----------------------Component Tree------------------------------------------------//
+
+  new Vue({
+    el: '#line-chart',
+    async mounted() {
+      const mount_data = await this.get_arr();
+      if (this.type == 'LAN1') {
+        this.dataTree = await this.filterUserLists(mount_data.data)
+      } else if (this.type == 'L1') {
+        this.dataTree = await this.filterL1(mount_data.data)
+      } else if (this.type == 'L2') {
+        this.dataTree = await this.filterL2(mount_data.data)
+      } else {
+        this.dataTree = mount_data.data;
+      }
+    },
+    data() {
+      return {
+        dataTree: [],
+        type: arr_type[1],
+        code: arr_val[1],
+        ip_address: '',
+        vender_type: '',
+        arr_port: [],
+        arr_l2: [],
+        arr_onu: [],
+        arr_tx: [],
+      }
+    },
+    methods: {
+      filterL1: async function(dataTree) {
+
+        let filtered = [];
+        let result = '';
+        const forLoop = async _ => {
+          for (let i = 0; i < dataTree.children.length; i++) {
+            let children_l1 = await dataTree.children[i].id;
+            /* const result = await children_l1.children((member) => {
+              return member.name == 'AYT01X2OPG5'
+            }) */
+            if (children_l1 == this.code) {
+              filtered = {
+                id: dataTree.id,
+                name: dataTree.name,
+                depth: 0,
+                children: [{
+                  id: dataTree.children[i].id,
+                  name: dataTree.children[i].name,
+                  depth: 1,
+                  children: dataTree.children[i].children,
+                }],
+              }
+              return filtered;
+              break
+            }
+
+            /* if (result != '' && result != undefined) {
+              break
+            } */
+
+          }
+
+        }
+        await forLoop()
+        return await filtered;
+      },
+      filterL2: async function(dataTree) {
+
+        let filtered = [];
+        let result = '';
+        const forLoop = async _ => {
+          for (let i = 0; i < dataTree.children.length; i++) {
+            let children_l1 = await dataTree.children[i].children;
+            /* const result = await children_l1.children((member) => {
+              return member.name == 'AYT01X2OPG5'
+            }) */
+            for (let k = 0; k < children_l1.length; k++) {
+
+              let children_l2 = await children_l1[k].name
+
+              if (children_l2 == this.code) {
+                filtered = {
+                  id: dataTree.id,
+                  name: dataTree.name,
+                  depth: 0,
+                  children: [{
+                    id: dataTree.children[i].id,
+                    name: dataTree.children[i].name,
+                    depth: 1,
+                    children: [{
+                      id: children_l1[k].id,
+                      name: children_l1[k].name,
+                      depth: 2,
+                      children: children_l1[k].children
+                    }]
+                  }],
+                }
+                return filtered;
+                break
+              }
+            }
+            /* if (result != '' && result != undefined) {
+              break
+            } */
+
+          }
+
+        }
+        await forLoop()
+        return await filtered;
+      },
+      filterUserLists: async function(dataTree) {
+
+        let filtered = [];
+        let result = '';
+        const forLoop = async _ => {
+          for (let i = 0; i < dataTree.children.length; i++) {
+            let children_l1 = await dataTree.children[i].children;
+            /* const result = await children_l1.children((member) => {
+              return member.name == 'AYT01X2OPG5'
+            }) */
+            for (let k = 0; k < children_l1.length; k++) {
+
+              let children_l2 = await children_l1[k].children
+              result = await children_l2.find((number) => {
+                return number.name == this.code
+              })
+
+              if (result != '' && result != undefined) {
+                filtered = {
+                  id: dataTree.id,
+                  name: dataTree.name,
+                  depth: 0,
+                  children: [{
+                    id: dataTree.children[i].id,
+                    name: dataTree.children[i].name,
+                    depth: 1,
+                    children: [{
+                      id: children_l1[k].id,
+                      name: children_l1[k].name,
+                      depth: 2,
+                      children: children_l1[k].children
+                    }]
+                  }],
+                }
+
+                return filtered;
+                break
+              }
+            }
+            if (result != '' && result != undefined) {
+              break
+            }
+
+          }
+
+        }
+        await forLoop()
+        return await filtered;
+      },
+      get_arr: async function() {
+        let vm = this;
+        if (this.type == 'OLT') {
+          try {
+            let olt_result = await axios.get('..//services/spantree.php?oltname=' + this.code)
+            let getDet = await this.get_ip(this.code);
+            return JSON.parse(JSON.stringify(olt_result))
+          } catch (error) {
+            alert("ไม่พบข้อมูลหมายเลข " + this.code)
+            /* close(); */
+            console.log(error)
+            return false;
+          }
+        } else if (this.type == 'L1') {
+          try {
+            /* let oltName = (await axios.get('../../vipmonitor/devTrack/api/onuDetail.php?lan1=' + this.code)).data.OLT_NAME */
+            let oltName = (arr_detail = await axios.get('../spantree/api/l1GetOlt.php?l1Name=' + this.code)).data.OLT_NAME;
+            let getDet = await this.get_ip(oltName);
+            let olt_result = await axios.get('../services/spantree.php?oltname=' + oltName)
+            return JSON.parse(JSON.stringify(olt_result))
+          } catch (error) {
+            alert("ไม่พบข้อมูลหมายเลข " + this.code)
+            /* close(); */
+            console.log(error)
+            return false;
+          }
+        } else if (this.type == 'L2') {
+          try {
+            /* let oltName = (await axios.get('../../vipmonitor/devTrack/api/onuDetail.php?lan1=' + this.code)).data.OLT_NAME */
+            let oltName = (arr_detail = await axios.get('../spantree/api/l2Detail.php?l2Name=' + this.code)).data.OLT_NAME;
+            let getDet = await this.get_ip(oltName);
+            let olt_result = await axios.get('../services/spantree.php?oltname=' + oltName)
+            return JSON.parse(JSON.stringify(olt_result))
+          } catch (error) {
+            alert("ไม่พบข้อมูลหมายเลข " + this.code)
+            /* close(); */
+            console.log(error)
+            return false;
+          }
+        } else if (this.type == 'LAN1') {
+          try {
+            let oltName = (await axios.get('../../vipmonitor/devTrack/api/onuDetail.php?lan1=' + this.code)).data.OLT_NAME
+            let getDet = await this.get_ip(oltName);
+            let olt_result = await axios.get('../services/spantree.php?oltname=' + oltName)
+            return JSON.parse(JSON.stringify(olt_result))
+          } catch (error) {
+            alert("ไม่พบข้อมูลหมายเลข " + this.code)
+            /* close(); */
+            console.log(error)
+            return false;
+          }
+        }
+      },
+      get_ip: async function(olt_name) {
+        const olt_ip = await axios.get('../../vipmonitor/devTrack/api/oltDetail.php?oltName=' + olt_name);
+        this.ip_address = olt_ip.data.OLT_IP;
+        this.vender_type = olt_ip.data.OLT_VENDOR;
+      },
+      chk_onus_name: async function(array) {
+        let i = 0
+        Object.keys(array).forEach(async (key) => {
+          if (array[key].name == '' || array[key].name == null) {
+            i++
+          }
+        });
+        return i
+      },
+      get_l2: async function(l2, port) {
+        const resultData = (l2.find(({
+          L1_S_Port
+        }) => L1_S_Port === port)).ONUl2;
+
+        Object.keys(resultData).forEach(async (key) => {
+          let arr_chk = {}
+          const l2_name = resultData[key]
+          const ls_child = l2_name.children
+
+          const chk_name_onu = await this.chk_onus_name(ls_child);
+
+          if (l2_name.name != '' && l2_name.name != null && chk_name_onu < 8) {
+
+            try {
+              const arr_onu_detail = await axios.get('../spantree/api/l2Detail.php?l2Name=' + l2_name.name);
+              arr_chk = await arr_onu_detail.data;
+              arr_chk['L2_SPLITTER'] = l2_name.name;
+              arr_data_l2.push(arr_chk);
+              const onu_detail = arr_onu_detail.data.ONUs
+              if (onu_detail != '' && onu_detail.length > 0) {
+                Object.keys(onu_detail).forEach(async (key) => {
+                  const onus = onu_detail[key]
+
+                  await this.arr_onu.push({
+                    GPON_PORT: port,
+                    L2_SPLITTER_NAME: l2_name.name,
+                    ONUs_id: onus.ONU_ID,
+                    LAN1: onus.LAN1,
+                  });
+                })
+
+              }
+
+
+            } catch (error) {}
+
+          }
+
+
+        })
+
+
+      },
+      chk_onu_tx: async function(ip, port) {
+
+        let olt_sn = '';
+        let l1_sn = 'ALL';
+        let l2_sn = 'ALL';
+
+        if (this.type == 'LAN1') {
+          olt_sn = this.dataTree.name;
+          let l1_id = this.dataTree.children[0].name;
+          l1_sn = (l1_id.split(" : "))[0];
+          l2_sn = this.dataTree.children[0].children[0].name;
+
+          let res_status = await axios.post('./services/getData.php', {
+            olt_n: olt_sn,
+            l1_name: l1_sn,
+            l2_name: l2_sn
+          });
+
+          cir_offline = res_status;
+
+
+        } else if (this.type == 'L1') {
+          olt_sn = this.dataTree.name;
+          let l1_id = this.dataTree.children[0].name;
+          l1_sn = (l1_id.split(" : "))[0];
+
+          let res_status = await axios.post('./services/getData.php', {
+            olt_n: olt_sn,
+            l1_name: l1_sn,
+            l2_name: l2_sn
+          });
+
+          cir_offline = res_status;
+
+
+        } else if (this.type == 'L2') {
+          olt_sn = this.dataTree.name;
+          let l1_id = this.dataTree.children[0].name;
+          l1_sn = (l1_id.split(" : "))[0];
+          l2_sn = this.dataTree.children[0].children[0].name;
+
+          let res_status = await axios.post('./services/getData.php', {
+            olt_n: olt_sn,
+            l1_name: l1_sn,
+            l2_name: l2_sn
+          });
+          cir_offline = res_status;
+
+        } else {
+          olt_sn = this.dataTree.name;
+
+          let res_status = await axios.post('./services/getData.php', {
+            olt_n: olt_sn,
+            l1_name: l1_sn,
+            l2_name: l2_sn
+          });
+
+          cir_offline = res_status;
+
+        }
+        await this.get_onus();
+
+      },
+      get_datial_onu: async function(ip, port) {
+        try {
+          const get_array_onu = this.chk_onu_tx(ip, port).then(function() {
+              $("#Loading").removeClass("loading").addClass("");
+              $("#Loading").hide();
+            })
+            .catch(function(error) {
+              console.log(error);
+            })
+
+        } catch (error) {
+          console.log(error);
+        }
+
+
+      },
+      chk_signal_onu: async function(signal) {
+
+
+      },
+      get_onus: async function(arr_onu, detail_onu, l1_port) {
+
+        let arr_signal = cir_offline.data;
+        let x1490x = '';
+        let x1550x = '';
+        let c_status = '';
+
+
+
+        await Object.keys(arr_signal).forEach(async (key) => {
+          const onus = arr_signal[key];
+
+          const circuit_name = onus.CIRCUIT;
+
+          const arr_rx = [];
+          c_status = onus['STATUS'];
+
+          console.info(onus);
+          if (onus['1490RX'] != '' && onus['1490RX'] != null && onus['1490RX'] != '-') {
+            x1490x = onus['1490RX'];
+            arr_rx.push(onus['1490RX']);
+          }
+
+          if (onus['1310TX'] != '' && onus['1310TX'] != null && onus['1310TX'] != '-') {
+            arr_rx.push(onus['1310TX']);
+          }
+
+          if (onus['1310RX'] != '' && onus['1310RX'] != null && onus['1310RX'] != '-') {
+            arr_rx.push(onus['1310RX']);
+          }
+
+          if (onus['1550RX'] != '' && onus['1550RX'] != null && onus['1550RX'] != '-') {
+            x1550x = onus['1550RX'];
+            arr_rx.push(onus['1550RX']);
+          }
+
+          if (c_status == "online") {
+
+            let node_txt = circuit_name + '(1490RX: ' + x1490x + ',1550RX: ' + x1550x + ')';
+            $("#dot" + circuit_name).next().text(node_txt);
+            $("#" + circuit_name).removeClass("link-offline").addClass("link-online");
+          } else if (c_status == "offline") {
+            $("#dot" + circuit_name).removeClass("node-dot-active").addClass("node-dot-offline");
+
+          } else {
+            $("#dot" + circuit_name).removeClass("node-dot-active").addClass("node-notline");
+
+          }
+
+          /* if (lan1.length == 1) {
+            const arr_rx = [];
+            const rx = lan1[0];
+
+            const circuit_name = onus.LAN1
+
+            await this.arr_tx.push({
+              CIRCUIT: circuit_name,
+              DATA_TX: lan1,
+            });
+            arr_data_tx = this.arr_tx
+          } */
+
+
+
+        })
+      },
+      visit: function(parent, visitFn, childrenFn) {
+        let visitFn2 = visitFn;
+        let childrenFn2 = childrenFn;
+
+        if (!parent) return;
+        visitFn2(parent);
+
+        let children = childrenFn2(parent);
+        if (children) {
+          var count = children.length;
+          for (var i = 0; i < count; i++) {
+            this.visit(children[i], visitFn2, childrenFn2);
+          }
+        }
+      },
+      buildTree: function(containerName, customOptions) {
+        if (document.getElementsByTagName('svg')) {
+          d3.selectAll('svg').remove()
+        }
+
+        var options = $.extend({
+            nodeRadius: 8,
+            fontSize: 12,
+          },
+          customOptions,
+        );
+
+        let totalNodes = 0;
+        let maxLabelLength = 0;
+        let arr_tree = this.dataTree;
+        if (arr_tree != '') {
+          this.visit(arr_tree, function(d) {
+              totalNodes++;
+              if (d.children && d.children.length > 0) {
+                maxLabelLength = Math.max(d.name.length, maxLabelLength);
+              }
+            },
+            function(d) {
+              if (d.children && d.children.length > 0) {
+                return d.children && d.children.length > 0 ? d.children : null;
+              } else {
+                return d.children = null;
+              }
+            },
+          );
+          // size of the diagram
+          let size = {
+            width: $(containerName).outerWidth(),
+            height: totalNodes * 30,
+          };
+
+
+
+          let tree = d3.layout.tree().sort(null).size([size.height, size.width - maxLabelLength * options.fontSize]).children(function(d) {
+            return !d.children || d.children.length === 0 ? null : d.children;
+          });
+
+
+          let nodes = tree.nodes(arr_tree);
+          let links = tree.links(nodes);
+
+
+          let layoutRoot = d3.select(containerName).append('svg:svg').attr('width', (size.width * 1.5)).attr('height', size.height).append('svg:g').attr('class', 'container').attr('transform', 'translate(' + (maxLabelLength * 7) +
+            ',0)');
+
+          // Edges between nodes as a <path class="link" />
+          let nodelink = d3.svg.diagonal().projection(function(d) {
+            return [d.y - 8, d.x];
+          });
+          let link = d3.svg.diagonal().projection(function(d) {
+            return [d.y - 8, d.x];
+          });
+          let k = 0
+          let old_id = ''
+          let gron_port = '';
+          layoutRoot.selectAll('path.link').data(links).enter().append('svg:path').attr('class', function(nodes) {
+            let name_id = nodes.source.name;
+            let name_c = nodes.source.name.count;
+            let link_class = '';
+            let depth = nodes.source.depth;
+            if (depth == '1' || depth == '0') {
+              link_class = 'link';
+            } else {
+              link_class = 'link-offline';
+            }
+
+            return link_class;
+          }).attr('d', link).attr('id', function(nodes) {
+            let name_id = nodes.source.name;
+            let depth = nodes.source.depth;
+            let name_c = nodes.source.name.count;
+            let id_name = ''
+            let link_class = '';
+            let i = '';
+            let chk_name = ''
+            let length_child = nodes.source.children.length
+            if (depth == 2) {
+              if (k >= length_child || name_id != old_id) {
+                k = '0'
+                chk_name = nodes.source.children[k].name
+              } else {
+                chk_name = nodes.source.children[k].name
+              }
+
+              id_name = chk_name
+              old_id = nodes.source.name;
+              k++
+            } else {
+              id_name = name_id
+            }
+
+
+            return id_name;
+          });
+
+
+          var nodeGroup = layoutRoot.selectAll('g.node').data(nodes)
+            .enter()
+            .append('svg:g')
+            .attr('class', 'node')
+            .attr('onclick', function(nodes) {
+              let olt_type = nodes.depth;
+              let tx = this.arr_tx;
+              if (olt_type == 0) {
+                return 'modal_detail("olt","' + nodes.name + '")';
+              } else if (olt_type == 1) {
+                return 'modal_detail("l1","' + nodes.name + '")';
+              } else if (olt_type == 2) {
+                return 'modal_detail("l2","' + nodes.name + '")';
+              } else if (olt_type == 3) {
+                return 'modal_detail("port","' + nodes.name + '")';
+              }
+
+            })
+            .attr('transform', function(d) {
+              return 'translate(' + d.y + ',' + d.x + ')';
+            });
+
+          nodeGroup.append('svg:circle').attr('class', function(nodes) {
+
+            if (nodes.name != '' && nodes.name != null) {
+              return 'node-dot-active';
+            } else {
+              return 'node-dot-inactive';
+            }
+
+          }).attr('r', options.nodeRadius).attr('id', function(nodes) {
+            let node_name = 'dot' + nodes.name;
+            return node_name;
+          });
+
+          nodeGroup.append('svg:text').attr('text-anchor', function(d) {
+            return d.children ? 'end' : 'start';
+          }).attr('dx', function(d) {
+            var gap = 2 * options.nodeRadius;
+            return d.children ? -gap : gap;
+          }).attr('dy', 3).text(function(d) {
+            return d.name;
+          });
+        }
+
+      },
+    },
+    watch: {
+      dataTree(val) {
+        if (val) {
+          Object.keys(val.children).forEach(key => {
+            const name_id = val.children[key].name
+            const arr_children = val.children[key]
+            let port_key = name_id.split(" : ");
+
+            this.arr_l2.push({
+              L1_S_Port: port_key[1],
+              ONUl2: val.children[key].children
+            });
+            this.arr_port.push(port_key[1]);
+          })
+
+          this.get_datial_onu(this.ip_address, this.arr_port);
+          this.buildTree('#line-chart')
+        }
+      }
+    }
+  })
+  //--------------------------------------------------------------------------------//
+</script>
+
+</html>

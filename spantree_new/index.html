@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.1.2/vuex.min.js"></script>
+  <script src="https://unpkg.com/@chenfengyuan/vue-qrcode@1.0.1/dist/vue-qrcode.min.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <script>
+    Vue.component(VueQrcode.name, VueQrcode);
+  </script>
+  <title>frontend</title>
+</head>
+<style media="screen">
+
+</style>
+
+<body>
+  <div class="container">
+    <div class="row py-5 text-center">
+      <noscript>
+        <strong>We're sorry but frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      </noscript>
+
+      <div id="app" class="col-lg-12">
+        <div class="row justify-content-center">
+          <div id="app" class="col-sm-12 col-lg-8">
+            <h1>Search using OLTName or LAN1</h1>
+            <form>
+              <div class="form-group">
+                <!-- <input v-if="picked === 'OLT'" class="form-control" placeholder="Enter OLT name" v-model="oltName"> -->
+                <input v-if="picked === 'L1'" class="form-control" placeholder="Enter L1 name" v-model="L1Name">
+                <input v-if="picked === 'L2'" class="form-control" placeholder="Enter L2 name" v-model="L2Name">
+                <input v-if="picked === 'LAN1'" class="form-control" placeholder="Enter CIRCUIT" v-model="lan1Name">
+              </div>
+              <!-- <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="OLT" v-model="picked">
+                <label class="form-check-label" for="inlineRadio1">OLT</label>
+              </div> -->
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="L1" v-model="picked">
+                  <label class="form-check-label" for="inlineRadio3">L1</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="L2" v-model="picked">
+                <label class="form-check-label" for="inlineRadio4">L2</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="LAN1" v-model="picked">
+                <label class="form-check-label" for="inlineRadio2">LAN 1</label>
+              </div>
+              <div>
+                <button type="button" v-on:click="buttonClick" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- built files will be auto injected -->
+    </div>
+  </div>
+</body>
+
+<!-------------------------------bootstrap------------------------------ -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<!------------------------------------------------------------- -->
+
+<script lang="ts">
+  //-------------------test app---------------------------------//
+
+  new Vue({
+    'el': '#app',
+    data: {
+      picked: 'LAN1',
+      show: true,
+      oltName: '',
+      lan1Name: '',
+      L1Name: '',
+      L2Name: '',
+      url: ''
+    },
+    'methods': {
+      'buttonClick': function() {
+
+        if (this.picked == 'OLT') {
+          if (this.oltName) {
+            this.url = "./tree.html?" + "val=" + this.oltName + "&type=" + this.picked
+          } else {
+            alert("กรุณากรอกหมายเลข OLT");
+            return false;
+          }
+        } else if (this.picked == 'LAN1') {
+          if (this.lan1Name) {
+            this.url = "./tree.html?" + "val=" + this.lan1Name + "&type=" + this.picked
+          } else {
+            alert("กรุณากรอกหมายเลข LAN1");
+            return false;
+          }
+        } else if (this.picked == 'L1') {
+          if (this.L1Name) {
+            this.url = "./tree.html?" + "val=" + this.L1Name + "&type=" + this.picked
+          } else {
+            alert("กรุณากรอกหมายเลข L1");
+            return false;
+          }
+        } else if (this.picked == 'L2') {
+          if (this.L2Name) {
+            this.url = "./tree.html?" + "val=" + this.L2Name + "&type=" + this.picked
+          } else {
+            alert("กรุณากรอกหมายเลข L2");
+            return false;
+          }
+        }
+
+        window.open(this.url);
+      },
+    }
+  })
+
+
+  //-------------------router---------------------------------//
+
+  //-------------------router---------------------------------//
+
+  // const tree = {
+  //   template: '<div>tree</div>'
+  // }
+  // const Bar = {
+  //   template: '<div>bar</div>'
+  // }
+  //
+  // const routes = [{
+  //     path: '/tree',
+  //     component: tree
+  //   },
+  //   {
+  //     path: '/bar',
+  //     component: Bar
+  //   }
+  // ]
+  //
+  // const router = new VueRouter({
+  //   // mode: 'history',
+  //   // routes: routes
+  //   routes
+  // })
+  //
+  // const app = new Vue({
+  //   router
+  // }).$mount('#nav_app')
+  //-------------------router---------------------------------//
+</script>
+
+</html>

@@ -1,0 +1,39 @@
+INFO:root:IMPORTING....
+INFO:root:IMP:Json
+INFO:root:IMP:Socket
+INFO:root:IMP:Telnet
+INFO:root:IMP:Time
+INFO:root:IMP:Regex
+INFO:root:IMP:System
+INFO:root:Module Done!
+INFO:root:INITIALIZING
+INFO:root:Telnet to 10.50.64.182
+INFO:root:Telnet connection established
+INFO:root:Accessing SAM-BB
+INFO:root:SAM-BB: Access granted
+INFO:root:SAM-BB: Accessing OLT: 10.238.39.2
+INFO:root:OLT: Access Granted
+DEBUG:root:OLT ID IS :SMP03001G00
+INFO:root:Reading General ont infos with F/S/P:0 1 1
+DEBUG:root:OLT Tx power: 3.46
+DEBUG:root:Getting olt optical status of: 0
+WARNING:root:OLT:Ont 0 is not online
+DEBUG:root:Getting olt optical status of: 1
+WARNING:root:OLT:Ont 1 is not online
+DEBUG:root:Getting olt optical status of: 2
+DEBUG:root:Getting olt optical status of: 3
+DEBUG:root:Getting olt optical status of: 4
+DEBUG:root:Getting olt optical status of: 5
+DEBUG:root:Getting olt optical status of: 6
+DEBUG:root:Getting olt optical status of: 7
+DEBUG:root:Getting olt optical status of: 8
+DEBUG:root:Getting olt optical status of: 9
+DEBUG:root:Getting olt optical status of: 10
+WARNING:root:OLT:Ont 10 is not online
+DEBUG:root:Getting olt optical status of: 11
+DEBUG:root:Getting olt optical status of: 12
+DEBUG:root:Getting olt optical status of: 13
+WARNING:root:OLT:Ont 13 is not online
+DEBUG:root:Getting olt optical status of: 14
+WARNING:root:OLT:Ont 14 is not online
+DEBUG:root:Getting olt optical status of: 15

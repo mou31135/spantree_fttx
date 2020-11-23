@@ -1,0 +1,16 @@
+INFO:root:IMPORTING....
+INFO:root:IMP:Json
+INFO:root:IMP:Socket
+INFO:root:IMP:Telnet
+INFO:root:IMP:Time
+INFO:root:IMP:Regex
+INFO:root:IMP:System
+INFO:root:Module Done!
+INFO:root:INITIALIZING
+INFO:root:10.237.156.5
+INFO:root:Telnet to 10.237.156.5
+INFO:root:Telnet connection established
+INFO:root:SAM-BB: Accessing OLT: 10.237.156.5
+INFO:root:OLT: Access Granted
+DEBUG:root:OLT ID IS :CCS01044GO0
+INFO:root:Reading General ont infos with F/S/P:1 1 1
